@@ -71,6 +71,7 @@
     <string name="sd_card_available">Space available:<xliff:g id="available_size">%1$s</xliff:g></string>
     <string name="sd_card_size">SD card:<xliff:g id="total_size">%1$s</xliff:g></string>
     <string name="sd_folder">SD card</string>
+    <string name="emmc_folder">Internal card</string>
     <string name="search_hint">Search Files</string>
     <string name="search_title">Search Files</string>
     <string name="start_server">Start Service</string>

@@ -413,6 +413,9 @@ public class FileViewActivity extends Fragment implements
         if (path.startsWith(this.sdDir) && !mShowRealPath) {
             return getString(R.string.sd_folder)
                     + path.substring(this.sdDir.length());
+        } else if (path.startsWith("/mnt/emmc") && !mShowRealPath){
+        	return getString(R.string.emmc_folder)
+                    + path.substring("/mnt/emmc".length());
         } else {
             return path;
         }
@@ -421,8 +424,11 @@ public class FileViewActivity extends Fragment implements
     @Override
     public String getRealPath(String displayPath) {
         final String perfixName = getString(R.string.sd_folder);
+        final String internalCardName = getString(R.string.emmc_folder);
         if (displayPath.startsWith(perfixName)) {
             return this.sdDir + displayPath.substring(perfixName.length());
+        } else if (displayPath.startsWith(internalCardName)) {
+            return "/mnt/emmc" + displayPath.substring(internalCardName.length());
         } else {
             return displayPath;
         }

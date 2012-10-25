@@ -32,6 +32,7 @@
     <string name="tab_sd">文件管理</string>
     <string name="tab_remote">远程管理</string>
     <string name="sd_folder">SD卡</string>
+    <string name="emmc_folder">内置卡</string>
     <string name="category_all">所有</string>
     <string name="category_music">音乐</string>
     <string name="category_video">视频</string>

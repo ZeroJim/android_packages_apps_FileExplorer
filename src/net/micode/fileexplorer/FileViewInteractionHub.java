@@ -358,7 +358,11 @@ public class FileViewInteractionHub implements IOperationProgressListener {
 
         @Override
         public void onClick(View v) {
+        	
             String path = (String) v.getTag();
+            if (!path.startsWith(mRoot)) {
+            	mRoot = path;
+            }
             assert (path != null);
             showDropdownNavigation(false);
             if (mFileViewListener.onNavigation(path))
@@ -380,6 +384,31 @@ public class FileViewInteractionHub implements IOperationProgressListener {
             String displayPath = mFileViewListener.getDisplayPath(mCurrentPath);
             boolean root = true;
             int left = 0;
+            if (new File("/mnt/emmc").exists() && (mCurrentPath.equals("/mnt/sdcard") || mCurrentPath.equals("/mnt/emmc"))){
+            	String paths[]={"/mnt/sdcard", "/mnt/emmc"};
+            	for (int i = 0; i < paths.length; i++) {
+            		 View listItem = LayoutInflater.from(mContext).inflate(
+                             R.layout.dropdown_item, null);
+
+                     View listContent = listItem.findViewById(R.id.list_item);
+                     listContent.setPadding(0, 0, 0, 0);
+                     ImageView img = (ImageView) listItem
+                             .findViewById(R.id.item_icon);
+
+                     img.setImageResource( R.drawable.dropdown_icon_root);
+
+                     TextView text = (TextView) listItem
+                             .findViewById(R.id.path_name);
+                     String substring = mFileViewListener.getDisplayPath(paths[i]);
+                     if (substring.isEmpty())
+                         substring = "/";
+                     text.setText(substring);
+
+                     listItem.setOnClickListener(navigationClick);
+                     listItem.setTag(paths[i]);
+                     list.addView(listItem);
+				}
+            }
             while (pos != -1 && !displayPath.equals("/")) {// 如果当前位置在根文件夹则不显示导航条
                 int end = displayPath.indexOf("/", pos);
                 if (end == -1)
@@ -530,7 +559,6 @@ public class FileViewInteractionHub implements IOperationProgressListener {
     public void refreshFileList() {
         clearSelection();
         updateNavigationPane();
-
         // onRefreshFileList returns true indicates list has changed
         mFileViewListener.onRefreshFileList(mCurrentPath, mFileSortHelper);
 
