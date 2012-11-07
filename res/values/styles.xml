@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
     <style name="ShadowStyle">
         <item name="android:shadowColor">#6e6e6e</item>
         <item name="android:shadowDx">0.5</item>
@@ -187,5 +187,13 @@
         <item name="android:gravity">center</item>
         <item name="android:textSize">17sp</item>
         <item name="android:background">@drawable/bottom_button_bar</item>
+    </style>
+    <style name="CustomActivityTheme" parent="@android:style/Theme.Holo.Light">
+        <item name="android:actionBarTabStyle">@style/ContactsActionBarTabView</item>
+    </style>
+
+    <!-- style for the action bar, simply to change the background -->
+    <style name="ContactsActionBarTabView" parent="@android:style/Widget.Holo.ActionBar.TabView">
+        <item name="android:background">@drawable/action_bar_tab</item>
     </style>
 </resources>

@@ -14,7 +14,8 @@
 
     <drawable name="semi_black">#80000000</drawable>
 
-    <color name="remote_connect_text">#FFe78018</color>
+<!--     <color name="remote_connect_text">#FFe78018</color> -->
+	<color name="remote_connect_text">#FF333333</color>
     <color name="remote_disconnect_text">#FF901821</color>
-
+    <color name="category_down">#FF73C1DD</color>
 </resources>
