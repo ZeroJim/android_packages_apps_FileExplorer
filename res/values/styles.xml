@@ -86,7 +86,7 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_width">wrap_content</item>
         <item name="android:textSize">15px</item>
-        <item name="android:textColor">#A6A6A6</item>
+        <item name="android:textColor">@color/CategoryButtonCountTextColor</item>
     </style>
 
     <style name="InformationItemTitleStyle">
@@ -188,10 +188,22 @@
         <item name="android:textSize">17sp</item>
         <item name="android:background">@drawable/bottom_button_bar</item>
     </style>
+    <style name="CustomAppTheme" parent="@android:style/Theme.Holo.Light">
+        <item name="android:actionBarStyle">@android:style/Widget.Holo.Light.ActionBar.Solid</item>
+    </style>
+    <style name="CustomAppActionBar" parent="@android:style/Widget.Holo.Light.ActionBar.Solid">
+        <item name="android:background">@drawable/fileexplorer_ab_bg</item>
+    </style>
     <style name="CustomActivityTheme" parent="@android:style/Theme.Holo.Light">
         <item name="android:actionBarTabStyle">@style/ContactsActionBarTabView</item>
+        <item name="android:actionBarTabBarStyle">@style/CustomActionBarStyle</item>
+        <item name="android:actionBarStyle">@style/CustomAppActionBar</item>
     </style>
-
+	<style name="CustomActionBarStyle" parent="@android:style/Widget.Holo.Light.ActionBar.TabBar">
+	    <item name="android:background">@drawable/fileexplorer_ab_bg</item>
+	    <item name="android:divider">@drawable/action_bar_divider</item>
+	    
+	</style>
     <!-- style for the action bar, simply to change the background -->
     <style name="ContactsActionBarTabView" parent="@android:style/Widget.Holo.ActionBar.TabView">
         <item name="android:background">@drawable/action_bar_tab</item>
