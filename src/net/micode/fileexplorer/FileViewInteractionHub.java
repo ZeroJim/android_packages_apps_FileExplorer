@@ -712,7 +712,7 @@ public class FileViewInteractionHub implements IOperationProgressListener {
                                     showProgress(mContext
                                             .getString(R.string.operation_deleting));
                                 }
-                                clearSelection();
+                                refreshFileList();
                             }
                         })
                 .setNegativeButton(R.string.cancel,

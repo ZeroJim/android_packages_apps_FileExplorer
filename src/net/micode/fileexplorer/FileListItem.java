@@ -196,7 +196,7 @@ public class FileListItem {
 
         @Override
         public void onDestroyActionMode(ActionMode mode) {
-            mFileViewInteractionHub.clearSelection();
+            //mFileViewInteractionHub.clearSelection();
             ((FileExplorerTabActivity) mContext).setActionMode(null);
         }
     }
