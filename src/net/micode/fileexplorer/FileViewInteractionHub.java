@@ -561,7 +561,6 @@ public class FileViewInteractionHub implements IOperationProgressListener {
         updateNavigationPane();
         // onRefreshFileList returns true indicates list has changed
         mFileViewListener.onRefreshFileList(mCurrentPath, mFileSortHelper);
-
         // update move operation button state
         updateConfirmButtons();
 
@@ -662,7 +661,6 @@ public class FileViewInteractionHub implements IOperationProgressListener {
 
         return true;
     }
-
     private void notifyFileSystemChanged(String path) {
         if (path == null)
             return;
@@ -672,8 +670,7 @@ public class FileViewInteractionHub implements IOperationProgressListener {
             intent = new Intent(Intent.ACTION_MEDIA_MOUNTED);
             intent.setClassName("com.android.providers.media",
                     "com.android.providers.media.MediaScannerReceiver");
-            intent.setData(Uri.fromFile(Environment
-                    .getExternalStorageDirectory()));
+            intent.setData(Uri.fromFile(new File(path)));
             Log.v(LOG_TAG,
                     "directory changed, send broadcast:" + intent.toString());
         } else {
@@ -708,11 +705,21 @@ public class FileViewInteractionHub implements IOperationProgressListener {
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog,
                                     int whichButton) {
-                                if (mFileOperationHelper.Delete(selectedFiles)) {
-                                    showProgress(mContext
-                                            .getString(R.string.operation_deleting));
-                                }
-                                refreshFileList();
+                            	showProgress(mContext
+                                        .getString(R.string.operation_deleting));
+								if (mFileOperationHelper.Delete(selectedFiles)) {
+									refreshFileList();
+									Intent intent = new Intent(
+											"shendu.delete.file");
+									String array[] = new String[selectedFiles
+											.size()];
+									for (int i = 0; i < array.length; i++) {
+										array[i] = selectedFiles.get(i).filePath;
+									}
+									intent.putExtra("file", array);
+									mContext.sendBroadcast(intent);
+								}
+                                
                             }
                         })
                 .setNegativeButton(R.string.cancel,

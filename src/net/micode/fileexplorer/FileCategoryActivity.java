@@ -44,8 +44,8 @@ public class FileCategoryActivity extends Fragment implements IFileInteractionLi
 
     private HashMap<FileCategory, Integer> categoryIndex = new HashMap<FileCategory, Integer>();
 
-    private FileListCursorAdapter mAdapter;
-
+   // private FileListCursorAdapter mAdapter;
+    CategoryFileListAdaptor mAdapter;
     private FileViewInteractionHub mFileViewInteractionHub;
 
     private FileCategoryHelper mFileCagetoryHelper;
@@ -98,8 +98,8 @@ public class FileCategoryActivity extends Fragment implements IFileInteractionLi
         mFileIconHelper = new FileIconHelper(mActivity);
         mFavoriteList = new FavoriteList(mActivity, (ListView) mRootView.findViewById(R.id.favorite_list), this, mFileIconHelper);
         mFavoriteList.initList();
-        mAdapter = new FileListCursorAdapter(mActivity, null, mFileViewInteractionHub, mFileIconHelper);
-
+        //mAdapter = new FileListCursorAdapter(mActivity, null, mFileViewInteractionHub, mFileIconHelper);
+        mAdapter = new CategoryFileListAdaptor(mActivity, mFileViewInteractionHub, mFileIconHelper);
         ListView fileListView = (ListView) mRootView.findViewById(R.id.file_path_list);
         fileListView.setAdapter(mAdapter);
 
@@ -108,9 +108,27 @@ public class FileCategoryActivity extends Fragment implements IFileInteractionLi
         updateUI();
         registerScannerReceiver();
 
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction("shendu.delete.file");
+        mActivity.registerReceiver(mDeleteReceiver, intentFilter);
         return mRootView;
     }
 
+	private final BroadcastReceiver mDeleteReceiver = new BroadcastReceiver() {
+
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			String action = intent.getAction();
+			if (action.equals("shendu.delete.file")) {
+				String array[] = intent.getStringArrayExtra("file");
+				for (String s : array) {
+					mAdapter.remove(s);
+				}
+				mAdapter.notifyDataSetChanged();
+			}
+		}
+
+	};
     private void registerScannerReceiver() {
         mScannerReceiver = new ScannerReceiver();
         IntentFilter intentFilter = new IntentFilter();
@@ -318,16 +336,21 @@ public class FileCategoryActivity extends Fragment implements IFileInteractionLi
             mFileViewInteractionHub.onPrepareOptionsMenu(menu);
         }
     }
-
+    FileCategory mCurCategory;
     public boolean onRefreshFileList(String path, FileSortHelper sort) {
-        FileCategory curCategory = mFileCagetoryHelper.getCurCategory();
-        if (curCategory == FileCategory.Favorite || curCategory == FileCategory.All)
+    	refreshCategoryInfo();
+    	if (mCurCategory == mFileCagetoryHelper.getCurCategory()) {
+    		return false;
+    	}
+    	mCurCategory = mFileCagetoryHelper.getCurCategory();
+        if (mCurCategory == FileCategory.Favorite || mCurCategory == FileCategory.All)
             return false;
-
-        Cursor c = mFileCagetoryHelper.query(curCategory, sort.getSortMethod());
+        
+        Cursor c = mFileCagetoryHelper.query(mCurCategory, sort.getSortMethod());
         showEmptyView(c == null || c.getCount() == 0);
         mAdapter.changeCursor(c);
-
+        mAdapter.notifyDataSetChanged();
+        this.mFileViewActivity.refresh();
         return true;
     }
 
@@ -535,6 +558,7 @@ public class FileCategoryActivity extends Fragment implements IFileInteractionLi
         super.onDestroy();
         if (mActivity != null) {
             mActivity.unregisterReceiver(mScannerReceiver);
+            mActivity.unregisterReceiver(mDeleteReceiver);
         }
     }
 
