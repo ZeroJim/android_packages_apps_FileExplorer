@@ -43,6 +43,7 @@
             android:name=".FileExplorerTabActivity"
             android:theme="@style/CustomActivityTheme"
             android:configChanges="orientation|screenSize|keyboardHidden"
+            android:screenOrientation="portrait"
             android:uiOptions="splitActionBarWhenNarrow">
             <intent-filter >
                 <action android:name="android.intent.action.MAIN" />
