@@ -1,5 +1,6 @@
 package net.micode.fileexplorer;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -45,11 +46,6 @@ public class CategoryFileListAdaptor extends BaseAdapter{
 	}
 	
 	public void changeCursor(Cursor cursor) {
-		Log.i("songlog","change cursor");
-		/*if (mTest) {
-			String str = null;
-			str.toString();
-		}*/
         mFileNameList.clear();
         FileInfo fileInfo;
 		while (cursor.moveToNext()) {
@@ -59,8 +55,9 @@ public class CategoryFileListAdaptor extends BaseAdapter{
 					.getString(FileCategoryHelper.COLUMN_PATH);
 			fileInfo.fileName = Util.getNameFromFilepath(fileInfo.filePath);
 			fileInfo.fileSize = cursor.getLong(FileCategoryHelper.COLUMN_SIZE);
-			fileInfo.ModifiedDate = cursor
-					.getLong(FileCategoryHelper.COLUMN_DATE);
+			//fileInfo.ModifiedDate = cursor
+					//.getLong(FileCategoryHelper.COLUMN_DATE);
+			fileInfo.ModifiedDate = new File(fileInfo.filePath).lastModified();
 			mFileNameList.add(fileInfo);
 		}
     }
@@ -86,9 +83,6 @@ public class CategoryFileListAdaptor extends BaseAdapter{
         return mFactory.inflate(R.layout.category_file_browser_item, parent, false);
     }*/
 	public void remove(String file) {
-		// mFileNameList.remove(file);
-		Log.i("songlog", "remove before size:" + mFileNameList.size() + "\t"
-				+ file);
 		for (FileInfo f : mFileNameList) {
 			if (f.filePath.equals(file)) {
 				mFileNameList.remove(f);
