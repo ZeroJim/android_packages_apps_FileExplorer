@@ -69,7 +69,7 @@ public class FileCategoryActivity extends Fragment implements IFileInteractionLi
     private FileViewActivity mFileViewActivity;
 
     private boolean mConfigurationChanged = false;
-
+    public static final String REMOVE_CACHE = "shendu.remove.adapter.file";
     public void setConfigurationChanged(boolean changed) {
         mConfigurationChanged = changed;
     }
@@ -109,19 +109,23 @@ public class FileCategoryActivity extends Fragment implements IFileInteractionLi
         registerScannerReceiver();
 
         IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction("shendu.delete.file");
+        intentFilter.addAction(REMOVE_CACHE);
         mActivity.registerReceiver(mDeleteReceiver, intentFilter);
         return mRootView;
     }
-
+    // This Variable handle the problem that deleted file remain display  
+    ArrayList<String> mDeleteFileList = new ArrayList<String>();
 	private final BroadcastReceiver mDeleteReceiver = new BroadcastReceiver() {
 
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			String action = intent.getAction();
-			if (action.equals("shendu.delete.file")) {
+			if (action.equals(REMOVE_CACHE)) {
 				String array[] = intent.getStringArrayExtra("file");
 				for (String s : array) {
+					mDeleteFileList.add(s);
+				}
+				for (String s: mDeleteFileList) {
 					mAdapter.remove(s);
 				}
 				mAdapter.notifyDataSetChanged();
@@ -254,6 +258,7 @@ public class FileCategoryActivity extends Fragment implements IFileInteractionLi
     View.OnClickListener onClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+        	mDeleteFileList.clear();
             FileCategory f = button2Category.get(v.getId());
             if (f != null) {
                 onCategorySelected(f);
@@ -339,9 +344,9 @@ public class FileCategoryActivity extends Fragment implements IFileInteractionLi
     FileCategory mCurCategory;
     public boolean onRefreshFileList(String path, FileSortHelper sort) {
     	refreshCategoryInfo();
-    	if (mCurCategory == mFileCagetoryHelper.getCurCategory()) {
-    		return false;
-    	}
+		// if (mCurCategory == mFileCagetoryHelper.getCurCategory()) {
+		// return false;
+		// }
     	mCurCategory = mFileCagetoryHelper.getCurCategory();
         if (mCurCategory == FileCategory.Favorite || mCurCategory == FileCategory.All)
             return false;
@@ -349,6 +354,9 @@ public class FileCategoryActivity extends Fragment implements IFileInteractionLi
         Cursor c = mFileCagetoryHelper.query(mCurCategory, sort.getSortMethod());
         showEmptyView(c == null || c.getCount() == 0);
         mAdapter.changeCursor(c);
+        for (String s: mDeleteFileList) {
+			mAdapter.remove(s);
+		}
         mAdapter.notifyDataSetChanged();
         this.mFileViewActivity.refresh();
         return true;
@@ -471,6 +479,15 @@ public class FileCategoryActivity extends Fragment implements IFileInteractionLi
 
     private void startMoveToFileView(ArrayList<FileInfo> files) {
         if (files.size() == 0) return;
+        ArrayList<FileInfo> selectedFiles = files;
+        Intent intent = new Intent(FileCategoryActivity.REMOVE_CACHE);
+		String array[] = new String[selectedFiles
+				.size()];
+		for (int i = 0; i < array.length; i++) {
+			array[i] = selectedFiles.get(i).filePath;
+		}
+		intent.putExtra("file", array);
+		this.getActivity().sendBroadcast(intent);
         mFileViewActivity.moveToFile(files);
         mActivity.getActionBar().setSelectedNavigationItem(Util.SDCARD_TAB_INDEX);
     }
@@ -571,7 +588,8 @@ public class FileCategoryActivity extends Fragment implements IFileInteractionLi
             // handle intents related to external storage
             if (action.equals(Intent.ACTION_MEDIA_SCANNER_FINISHED) || action.equals(Intent.ACTION_MEDIA_MOUNTED)
                     || action.equals(Intent.ACTION_MEDIA_UNMOUNTED)) {
-                notifyFileChanged();
+				updateUI();
+				notifyFileChanged();
             }
         }
     }

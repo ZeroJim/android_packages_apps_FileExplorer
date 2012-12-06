@@ -208,7 +208,7 @@ public class FileIconLoader implements Callback {
         if (loaded) {
             mPendingRequests.remove(view);
         } else {
-            FileId p = new FileId(path, id, cate);
+        	FileId p = new FileId(path, id, cate);
             mPendingRequests.put(view, p);
             if (!mPaused) {
                 // Send a request to start loading photos
@@ -229,7 +229,6 @@ public class FileIconLoader implements Callback {
      */
     private boolean loadCachedIcon(ImageView view, String path, FileCategory cate) {
         ImageHolder holder = mImageCache.get(path);
-        
         if (holder == null) {
             holder = ImageHolder.create(cate);
             if (holder == null)
@@ -240,15 +239,14 @@ public class FileIconLoader implements Callback {
             if (holder.isNull()) {
                 return true;
             }
-
             // failing to set imageview means that the soft reference was
             // released by the GC, we need to reload the photo.
             if (holder.setImageView(view)) {
                 return true;
             }
         }
-
         holder.state = ImageHolder.NEEDED;
+        requestLoading();
         return false;
     }
 
@@ -293,6 +291,11 @@ public class FileIconLoader implements Callback {
         clear();
     }
 
+	public void clearImageCache() {
+		pause();
+		mImageCache.clear();
+		resume();
+	}
     public void clear() {
         mPendingRequests.clear();
         mImageCache.clear();

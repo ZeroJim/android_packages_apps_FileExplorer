@@ -22,6 +22,7 @@ package net.micode.fileexplorer;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Context;
+import android.util.Log;
 import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -36,7 +37,6 @@ public class FileListItem {
     public static void setupFileListItemInfo(Context context, View view,
             FileInfo fileInfo, FileIconHelper fileIcon,
             FileViewInteractionHub fileViewInteractionHub) {
-
         // if in moving mode, show selected file always
         if (fileViewInteractionHub.isMoveState()) {
             fileInfo.Selected = fileViewInteractionHub.isFileSelected(fileInfo.filePath);

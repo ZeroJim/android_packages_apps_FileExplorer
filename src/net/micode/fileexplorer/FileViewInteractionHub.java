@@ -98,7 +98,7 @@ public class FileViewInteractionHub implements IOperationProgressListener {
         assert (fileViewListener != null);
         mFileViewListener = fileViewListener;
         setup();
-        mFileOperationHelper = new FileOperationHelper(this);
+        mFileOperationHelper = new FileOperationHelper(this,mContext);
         mFileSortHelper = new FileSortHelper();
         mContext = mFileViewListener.getContext();
         mFolderHistroyStack = new Stack<String>();
@@ -148,11 +148,15 @@ public class FileViewInteractionHub implements IOperationProgressListener {
     // operation finish notification
     @Override
     public void onFinish() {
-        if (progressDialog != null) {
-            progressDialog.dismiss();
-            progressDialog = null;
-        }
+		try {
+			Thread.sleep(500);
+		} catch (InterruptedException e) {
 
+		}
+		if (progressDialog != null) {
+			progressDialog.dismiss();
+			progressDialog = null;
+		}
         mFileViewListener.runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -709,8 +713,7 @@ public class FileViewInteractionHub implements IOperationProgressListener {
                                         .getString(R.string.operation_deleting));
 								if (mFileOperationHelper.Delete(selectedFiles)) {
 									refreshFileList();
-									Intent intent = new Intent(
-											"shendu.delete.file");
+									Intent intent = new Intent(FileCategoryActivity.REMOVE_CACHE);
 									String array[] = new String[selectedFiles
 											.size()];
 									for (int i = 0; i < array.length; i++) {

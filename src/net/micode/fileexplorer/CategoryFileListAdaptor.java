@@ -86,7 +86,6 @@ public class CategoryFileListAdaptor extends BaseAdapter{
 		for (FileInfo f : mFileNameList) {
 			if (f.filePath.equals(file)) {
 				mFileNameList.remove(f);
-				Log.i("songlog", "remove after size:" + mFileNameList.size());
 				return;
 			}
 		}

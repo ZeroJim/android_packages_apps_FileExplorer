@@ -24,6 +24,7 @@ import net.micode.fileexplorer.FileCategoryHelper.FileCategory;
 import net.micode.fileexplorer.FileIconLoader.IconLoadFinishListener;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -99,7 +100,10 @@ public class FileIconHelper implements IconLoadFinishListener {
         }
 
     }
-
+    // clear image cache then we can reload images
+	public void clearIcon() {
+		mIconLoader.clearImageCache();
+	}
     public void setIcon(FileInfo fileInfo, ImageView fileImage, ImageView fileImageFrame) {
         String filePath = fileInfo.filePath;
         long fileId = fileInfo.dbId;
@@ -109,7 +113,6 @@ public class FileIconHelper implements IconLoadFinishListener {
         boolean set = false;
         int id = getFileIcon(extFromFilename);
         fileImage.setImageResource(id);
-
         mIconLoader.cancelRequest(fileImage);
         switch (fc) {
             case Apk:

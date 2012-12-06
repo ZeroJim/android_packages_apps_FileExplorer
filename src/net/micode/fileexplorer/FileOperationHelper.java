@@ -23,6 +23,8 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Environment;
 import android.text.TextUtils;
@@ -39,14 +41,16 @@ public class FileOperationHelper {
 
     private FilenameFilter mFilter;
 
+    private Context mContext;
     public interface IOperationProgressListener {
         void onFinish();
 
         void onFileChanged(String path);
     }
 
-    public FileOperationHelper(IOperationProgressListener l) {
+    public FileOperationHelper(IOperationProgressListener l, Context context) {
         mOperationListener = l;
+        mContext = context;
     }
 
     public void setFilenameFilter(FilenameFilter f) {
@@ -133,20 +137,23 @@ public class FileOperationHelper {
             return false;
 
         final String _path = path;
-        asnycExecute(new Runnable() {
-            @Override
-            public void run() {
-                    for (FileInfo f : mCurFileNameList) {
-                        MoveFile(f, _path);
-                    }
-
-                    mOperationListener.onFileChanged(Environment
-                            .getExternalStorageDirectory()
-                            .getAbsolutePath());
-
-                    clear();
-                }
-        });
+		asnycExecute(new Runnable() {
+			@Override
+			public void run() {
+				for (FileInfo f : mCurFileNameList) {
+					MoveFile(f, _path);
+				}
+				// need wait for copy completed
+				try {
+					Thread.sleep(100);
+				} catch (java.lang.InterruptedException e) {
+					Log.v(LOG_TAG,"sleeping...");
+				}
+				mOperationListener.onFileChanged(Environment
+						.getExternalStorageDirectory().getPath());
+				clear();
+			}
+		});
 
         return true;
     }
@@ -240,18 +247,16 @@ public class FileOperationHelper {
                 }
             }
         }
-
         file.delete();
-
         Log.v(LOG_TAG, "DeleteFile >>> " + f.filePath);
     }
 
-    private void CopyFile(FileInfo f, String dest) {
+    private boolean CopyFile(FileInfo f, String dest) {
         if (f == null || dest == null) {
             Log.e(LOG_TAG, "CopyFile: null parameter");
-            return;
+            return false;
         }
-
+        boolean copySuccess = false;
         File file = new File(f.filePath);
         if (file.isDirectory()) {
 
@@ -267,14 +272,23 @@ public class FileOperationHelper {
             destFile.mkdirs();// 修复不能复制空文件夹的bug
             
             for (File child : file.listFiles(mFilter)) {
-                if (!child.isHidden() && Util.isNormalFile(child.getAbsolutePath())) {
-                    CopyFile(Util.GetFileInfo(child, mFilter, Settings.instance().getShowDotAndHiddenFiles()), destPath);
-                }
+				if (!child.isHidden()
+						&& Util.isNormalFile(child.getAbsolutePath())) {
+
+					copySuccess = CopyFile(Util.GetFileInfo(child, mFilter,
+							Settings.instance().getShowDotAndHiddenFiles()),
+							destPath);
+					if (!copySuccess) {
+						break;
+					}
+				}
             }
         } else {
             String destFile = Util.copyFile(f.filePath, dest);
+            copySuccess = (destFile != null);
         }
         Log.v(LOG_TAG, "CopyFile >>> " + f.filePath + "," + dest);
+        return copySuccess;
     }
 
     private boolean MoveFile(FileInfo f, String dest) {
@@ -284,12 +298,22 @@ public class FileOperationHelper {
             Log.e(LOG_TAG, "CopyFile: null parameter");
             return false;
         }
-
+        // In case that the source of the file and the destination is not the same volume
+        String source = f.filePath.split(File.separator)[2];
+        String destination = dest.split(File.separator)[2];
+        if (!source.equals(destination)) {
+			if (CopyFile(f, dest)) {
+				DeleteFile(f);
+				mOperationListener.onFileChanged(f.filePath.replace(f.fileName, ""));
+			}
+			return true;
+		}
+        // when they in same volume
         File file = new File(f.filePath);
         String newPath = Util.makePath(dest, f.fileName);
-        try {
-            return file.renameTo(new File(newPath));
-        } catch (SecurityException e) {
+		try {
+			return file.renameTo(new File(newPath));
+		} catch (SecurityException e) {
             Log.e(LOG_TAG, "Fail to move file," + e.toString());
         }
         return false;

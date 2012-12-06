@@ -84,16 +84,17 @@ public class FileViewActivity extends Fragment implements
     private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-
+        	final Intent pathIntent = intent;
             String action = intent.getAction();
-            Log.v(LOG_TAG, "received broadcast:" + intent.toString());
-            if (action.equals(Intent.ACTION_MEDIA_MOUNTED)
+            if (action.equals(Intent.ACTION_MEDIA_SCANNER_FINISHED)||action.equals(Intent.ACTION_MEDIA_MOUNTED)
                     || action.equals(Intent.ACTION_MEDIA_UNMOUNTED)) {
                 runOnUiThread(new Runnable() {
                     @Override
-                    public void run() {
-                        updateUI();
-                    }
+					public void run() {
+                    	Log.i("songlog", "current path:"+pathIntent.getDataString());
+						getFileIconHelper().clearIcon();
+						updateUI();
+					}
                 });
             }
         }
@@ -205,6 +206,7 @@ public class FileViewActivity extends Fragment implements
         mFileViewInteractionHub.refreshFileList();
 
         IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(Intent.ACTION_MEDIA_SCANNER_FINISHED);
         intentFilter.addAction(Intent.ACTION_MEDIA_MOUNTED);
         intentFilter.addAction(Intent.ACTION_MEDIA_UNMOUNTED);
         intentFilter.addDataScheme("file");
@@ -339,6 +341,7 @@ public class FileViewActivity extends Fragment implements
                 mFileListView.setSelection(pos);
             }
         });
+        mAdapter.notifyDataSetChanged();
         return true;
     }
 
