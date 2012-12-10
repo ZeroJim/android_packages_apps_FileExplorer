@@ -388,7 +388,7 @@ public class FileViewInteractionHub implements IOperationProgressListener {
             String displayPath = mFileViewListener.getDisplayPath(mCurrentPath);
             boolean root = true;
             int left = 0;
-            if (new File("/mnt/emmc").exists() && (mCurrentPath.equals("/mnt/sdcard") || mCurrentPath.equals("/mnt/emmc"))){
+            if (Util.isInternalCardReady() && (mCurrentPath.equals("/mnt/sdcard") || mCurrentPath.equals("/mnt/emmc"))){
             	String paths[]={"/mnt/sdcard", "/mnt/emmc"};
             	for (int i = 0; i < paths.length; i++) {
             		 View listItem = LayoutInflater.from(mContext).inflate(

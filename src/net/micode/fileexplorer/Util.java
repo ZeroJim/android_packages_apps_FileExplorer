@@ -54,6 +54,13 @@ public class Util {
         return Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED);
     }
 
+	public static boolean isInternalCardReady() {
+		File emmc = new File("/mnt/emmc/");
+		if (emmc.exists()) {
+			return emmc.getFreeSpace() > 0;
+		}
+		return false;
+	}
     // if path1 contains path2
     public static boolean containsPath(String path1, String path2) {
         String path = path2;
