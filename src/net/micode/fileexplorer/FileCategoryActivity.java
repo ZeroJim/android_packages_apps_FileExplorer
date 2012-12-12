@@ -128,6 +128,11 @@ public class FileCategoryActivity extends Fragment implements IFileInteractionLi
 				for (String s: mDeleteFileList) {
 					mAdapter.remove(s);
 				}
+				for (String s:mDeleteFileList) {
+					FileCategory typeCategory = FileCategoryHelper.getCategoryFromPath(s);
+					CategoryInfo categoryInfo = mFileCagetoryHelper.getCategoryInfos().get(typeCategory);
+					setCategoryCount(typeCategory, --categoryInfo.count);
+				}
 				mAdapter.notifyDataSetChanged();
 			}
 		}
@@ -344,9 +349,9 @@ public class FileCategoryActivity extends Fragment implements IFileInteractionLi
     FileCategory mCurCategory;
     public boolean onRefreshFileList(String path, FileSortHelper sort) {
     	refreshCategoryInfo();
-		// if (mCurCategory == mFileCagetoryHelper.getCurCategory()) {
-		// return false;
-		// }
+		if (mCurCategory == mFileCagetoryHelper.getCurCategory()) {
+			return false;
+		}
     	mCurCategory = mFileCagetoryHelper.getCurCategory();
         if (mCurCategory == FileCategory.Favorite || mCurCategory == FileCategory.All)
             return false;
