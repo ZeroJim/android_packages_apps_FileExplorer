@@ -91,7 +91,6 @@ public class FileViewActivity extends Fragment implements
                 runOnUiThread(new Runnable() {
                     @Override
 					public void run() {
-                    	Log.i("songlog", "current path:"+pathIntent.getDataString());
 						getFileIconHelper().clearIcon();
 						updateUI();
 					}
@@ -241,6 +240,7 @@ public class FileViewActivity extends Fragment implements
                 || mFileViewInteractionHub == null) {
             return false;
         }
+        getFileIconHelper().clearRequestImage();
         return mFileViewInteractionHub.onBackPressed();
     }
 

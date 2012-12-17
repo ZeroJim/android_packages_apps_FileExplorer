@@ -296,6 +296,14 @@ public class FileIconLoader implements Callback {
 		mImageCache.clear();
 		resume();
 	}
+
+	// clear request list
+	public void clearRequestImage(){
+		pause();
+		mPendingRequests.clear();
+		resume();
+	}
+
     public void clear() {
         mPendingRequests.clear();
         mImageCache.clear();

@@ -104,6 +104,10 @@ public class FileIconHelper implements IconLoadFinishListener {
 	public void clearIcon() {
 		mIconLoader.clearImageCache();
 	}
+	//
+	public void clearRequestImage(){
+		mIconLoader.clearRequestImage();
+	}
     public void setIcon(FileInfo fileInfo, ImageView fileImage, ImageView fileImageFrame) {
         String filePath = fileInfo.filePath;
         long fileId = fileInfo.dbId;
