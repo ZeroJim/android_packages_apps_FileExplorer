@@ -19,7 +19,6 @@ import android.widget.BaseAdapter;
 public class CategoryFileListAdaptor extends BaseAdapter{
 
 	public int getCount() {
-		// TODO Auto-generated method stub
 		return mFileNameList.size();
 	}
 
@@ -79,9 +78,6 @@ public class CategoryFileListAdaptor extends BaseAdapter{
         mContext = context;
     }
 
-    /*public View newView(Context context, ViewGroup parent) {
-        return mFactory.inflate(R.layout.category_file_browser_item, parent, false);
-    }*/
 	public void remove(String file) {
 		for (FileInfo f : mFileNameList) {
 			if (f.filePath.equals(file)) {
@@ -89,8 +85,17 @@ public class CategoryFileListAdaptor extends BaseAdapter{
 				return;
 			}
 		}
-
 	}
+
+	public FileInfo findFile(String file) {
+		for (FileInfo f : mFileNameList) {
+			if (f.filePath.equals(file)) {
+				return mFileNameList.get(mFileNameList.indexOf(f));
+			}
+		}
+		return null;
+	}
+
     public Collection<FileInfo> getAllFiles() {
         return mFileNameList;
     }

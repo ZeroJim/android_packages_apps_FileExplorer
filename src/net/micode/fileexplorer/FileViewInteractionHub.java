@@ -662,7 +662,13 @@ public class FileViewInteractionHub implements IOperationProgressListener {
                     .setPositiveButton(R.string.confirm, null).create().show();
             return false;
         }
-
+        // send broadcast to notify rename
+        Intent intent = new Intent(FileCategoryActivity.RENAME_CACHE);
+		String array[] = new String[2];
+		array[0] = f.filePath;
+		array[1] = text;
+		intent.putExtra("file", array);
+		mContext.sendBroadcast(intent);
         return true;
     }
     private void notifyFileSystemChanged(String path) {

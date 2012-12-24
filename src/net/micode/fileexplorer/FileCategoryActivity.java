@@ -27,6 +27,7 @@ import net.micode.fileexplorer.FileExplorerTabActivity.IBackPressedListener;
 import net.micode.fileexplorer.FileViewInteractionHub.Mode;
 import net.micode.fileexplorer.Util.SDCardInfo;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -70,6 +71,7 @@ public class FileCategoryActivity extends Fragment implements IFileInteractionLi
 
     private boolean mConfigurationChanged = false;
     public static final String REMOVE_CACHE = "shendu.remove.adapter.file";
+    public static final String RENAME_CACHE = "shendu.rename.file";
     public void setConfigurationChanged(boolean changed) {
         mConfigurationChanged = changed;
     }
@@ -98,7 +100,6 @@ public class FileCategoryActivity extends Fragment implements IFileInteractionLi
         mFileIconHelper = new FileIconHelper(mActivity);
         mFavoriteList = new FavoriteList(mActivity, (ListView) mRootView.findViewById(R.id.favorite_list), this, mFileIconHelper);
         mFavoriteList.initList();
-        //mAdapter = new FileListCursorAdapter(mActivity, null, mFileViewInteractionHub, mFileIconHelper);
         mAdapter = new CategoryFileListAdaptor(mActivity, mFileViewInteractionHub, mFileIconHelper);
         ListView fileListView = (ListView) mRootView.findViewById(R.id.file_path_list);
         fileListView.setAdapter(mAdapter);
@@ -134,6 +135,15 @@ public class FileCategoryActivity extends Fragment implements IFileInteractionLi
 					setCategoryCount(typeCategory, --categoryInfo.count);
 				}
 				mAdapter.notifyDataSetChanged();
+			}
+			if (action.equals(RENAME_CACHE)) {
+				// the first string is name that is before rename
+				// the second string is after rename
+				String array[] = intent.getStringArrayExtra("file");
+				File newfile = new File(array[1]);
+				FileInfo fi = mAdapter.findFile(array[0]);
+				fi.fileName = newfile.getName();
+				fi.filePath = newfile.getPath();
 			}
 		}
 

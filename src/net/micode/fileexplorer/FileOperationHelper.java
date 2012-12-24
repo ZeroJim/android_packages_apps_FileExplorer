@@ -202,7 +202,7 @@ public class FileOperationHelper {
             boolean ret = file.renameTo(new File(newPath));
             if (ret) {
                 if (needScan) {
-                    mOperationListener.onFileChanged(f.filePath);
+                    mOperationListener.onFileChanged(f.filePath.substring(0, f.filePath.lastIndexOf("/")));
                 }
                 mOperationListener.onFileChanged(newPath);
             }
