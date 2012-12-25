@@ -241,7 +241,8 @@ public class FileIconLoader implements Callback {
             }
             // failing to set imageview means that the soft reference was
             // released by the GC, we need to reload the photo.
-            if (holder.setImageView(view)) {
+            String imagePath = (String)view.getTag();
+            if (imagePath.equals(path) && holder.setImageView(view)) {
                 return true;
             }
         }

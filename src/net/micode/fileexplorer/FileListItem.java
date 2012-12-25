@@ -60,7 +60,7 @@ public class FileListItem {
 
         ImageView lFileImage = (ImageView) view.findViewById(R.id.file_image);
         ImageView lFileImageFrame = (ImageView) view.findViewById(R.id.file_image_frame);
-
+        lFileImage.setTag(fileInfo.filePath);
         if (fileInfo.IsDir) {
             lFileImageFrame.setVisibility(View.GONE);
             lFileImage.setImageResource(R.drawable.folder);
