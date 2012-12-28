@@ -28,12 +28,41 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.text.TextUtils;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 
 public class IntentBuilder {
 
     public static void viewFile(final Context context, final String filePath) {
         String type = getMimeType(filePath);
-
+		if (MimeUtils.isSystemUsesDirect(type)) {
+			String msg = context.getResources().getString(R.string.msg_import) 
+						+"  <"+ filePath.substring(filePath.lastIndexOf("/")+1) +">" ;
+            new AlertDialog.Builder(context)
+							.setTitle(R.string.msg_title)
+							.setMessage(msg)
+							.setPositiveButton(R.string.yes, new OnClickListener(){
+									@Override
+									public void onClick(DialogInterface arg0, int arg1){
+										arg0.dismiss();
+										Intent intent = new Intent();
+										intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+										intent.setAction(android.content.Intent.ACTION_VIEW);
+										intent.setDataAndType(Uri.fromFile(new File(filePath)), getMimeType(filePath));
+										context.startActivity(intent);
+									}
+								})
+							.setNegativeButton(R.string.no, new OnClickListener(){
+									@Override
+									public void onClick(DialogInterface arg0, int arg1) {
+										arg0.dismiss();
+									}
+								})
+							.create()
+							.show();
+		}else
+		
         if (!TextUtils.isEmpty(type) && !TextUtils.equals(type, "*/*")) {
             /* 设置intent的file与MimeType */
             Intent intent = new Intent();

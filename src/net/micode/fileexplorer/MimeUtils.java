@@ -35,7 +35,18 @@ public final class MimeUtils {
     private static final Map<String, String> mimeTypeToExtensionMap = new HashMap<String, String>();
 
     private static final Map<String, String> extensionToMimeTypeMap = new HashMap<String, String>();
+    
+    private static final Map<String, String> systemUsesDirectTypeMap = new HashMap<String, String>();
 
+	static {
+	/**
+	 * The following table is used for systemUsesDirectTypeMap
+	 *	for some type that direct system import like *.vcf 
+	 */
+		addSystemUsesDirect("text/x-vcard", "vcf");
+		addSystemUsesDirect("text/x-vcalendar", "vcs");
+	}
+	
     static {
         // The following table is based on /etc/mime.types data minus
         // chemical/* MIME types and MIME types that don't map to any
@@ -235,6 +246,7 @@ public final class MimeUtils {
         add("audio/x-scpls", "pls");
         add("audio/x-sd2", "sd2");
         add("audio/x-wav", "wav");
+        add("audio/x-ape","ape");
         add("image/bmp", "bmp");
         add("audio/x-qcp", "qcp");
         add("image/gif", "gif");
@@ -352,6 +364,11 @@ public final class MimeUtils {
         add("video/x-ms-wmx", "wmx");
         add("video/x-ms-wvx", "wvx");
         add("video/x-msvideo", "avi");
+        add("video/avi", "avi");
+        add("video/x-matroska", "mkv");	
+        add("video/vnd.rn-realvideo", "rm");
+        add("video/vnd.rn-realvideo", "rmvb");
+        add("video/x-flv","flv");
         add("video/x-sgi-movie", "movie");
         add("x-conference/x-cooltalk", "ice");
         add("x-epoc/x-sisx-app", "sisx");
@@ -480,4 +497,31 @@ public final class MimeUtils {
         }
         return mimeTypeToExtensionMap.get(mimeType);
     }
+    /**
+     *	Return extension is mobile used: like vcf
+     *	@param extension
+     *	@return The extension is mobile used
+     */
+     public static boolean isSystemUsesDirect(String extension) {
+     android.util.Log.e("MimeUtils","extension="+ extension);
+     	if (extension == null || extension.isEmpty()) {
+            return false;
+        }
+        if (extension.startsWith(".")) {
+		    do  {
+		    	extension = extension.substring(1);
+		    } while ((extension.startsWith(".")));
+        }
+        if (extension.endsWith(".")) {
+		    extension = extension.substring(0,extension.lastIndexOf("."));
+        }
+        
+        boolean ret = systemUsesDirectTypeMap.containsKey(extension);
+        android.util.Log.e("MimeUtils"," equals:"+ret);
+        return ret;
+     }
+     
+     public static void addSystemUsesDirect(String mimeType, String extension) {
+     	systemUsesDirectTypeMap.put(mimeType,extension);
+     }
 }
