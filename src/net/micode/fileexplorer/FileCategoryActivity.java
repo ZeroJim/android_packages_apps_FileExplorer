@@ -111,6 +111,7 @@ public class FileCategoryActivity extends Fragment implements IFileInteractionLi
 
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(REMOVE_CACHE);
+        intentFilter.addAction(RENAME_CACHE);
         mActivity.registerReceiver(mDeleteReceiver, intentFilter);
         return mRootView;
     }
@@ -142,8 +143,11 @@ public class FileCategoryActivity extends Fragment implements IFileInteractionLi
 				String array[] = intent.getStringArrayExtra("file");
 				File newfile = new File(array[1]);
 				FileInfo fi = mAdapter.findFile(array[0]);
+				// change fileinfo
+				String oldpath = fi.filePath;
+				String newpath = oldpath.replace(fi.fileName, newfile.getName());
 				fi.fileName = newfile.getName();
-				fi.filePath = newfile.getPath();
+				fi.filePath = newpath;
 			}
 		}
 

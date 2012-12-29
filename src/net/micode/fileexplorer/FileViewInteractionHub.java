@@ -654,7 +654,6 @@ public class FileViewInteractionHub implements IOperationProgressListener {
             return false;
 
         if (mFileOperationHelper.Rename(f, text)) {
-            f.fileName = text;
             mFileViewListener.onDataChanged();
         } else {
             new AlertDialog.Builder(mContext)
