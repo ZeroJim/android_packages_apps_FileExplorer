@@ -362,10 +362,10 @@ public class FileCategoryActivity extends Fragment implements IFileInteractionLi
     }
     FileCategory mCurCategory;
     public boolean onRefreshFileList(String path, FileSortHelper sort) {
-    	refreshCategoryInfo();
 		if (mCurCategory == mFileCagetoryHelper.getCurCategory()) {
 			return false;
 		}
+		refreshCategoryInfo();
     	mCurCategory = mFileCagetoryHelper.getCurCategory();
         if (mCurCategory == FileCategory.Favorite || mCurCategory == FileCategory.All)
             return false;

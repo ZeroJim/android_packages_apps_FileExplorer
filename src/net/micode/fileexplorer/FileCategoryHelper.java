@@ -291,7 +291,6 @@ public class FileCategoryHelper {
             if (MediaFile.isImageFileType(type.fileType)) return FileCategory.Picture;
             if (Util.sDocMimeTypesSet.contains(type.mimeType)) return FileCategory.Doc;
         }
-
         int dotPosition = path.lastIndexOf('.');
         if (dotPosition < 0) {
             return FileCategory.Other;
