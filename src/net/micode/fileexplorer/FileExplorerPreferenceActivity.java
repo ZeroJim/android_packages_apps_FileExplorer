@@ -28,7 +28,9 @@ import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.EditTextPreference;
 import android.preference.PreferenceActivity;
+import android.preference.PreferenceCategory;
 import android.preference.PreferenceManager;
+import android.preference.PreferenceScreen;
 import android.text.TextUtils;
 
 /**
@@ -48,8 +50,36 @@ public class FileExplorerPreferenceActivity extends PreferenceActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        addPreferencesFromResource(R.xml.preferences);
-
+//        <EditTextPreference
+//        android:defaultValue="@string/default_primary_folder"
+//        android:key="pref_key_primary_folder"
+//        android:summary="@string/pref_primary_folder_summary"
+//        android:title="@string/pref_primary_folder" />
+        PreferenceScreen root = getPreferenceManager().createPreferenceScreen(this);
+        PreferenceCategory cate = new PreferenceCategory(this);
+        cate.setTitle(R.string.preference_title);
+        root.addPreference(cate);
+        
+        EditTextPreference edit = new EditTextPreference(this);
+        edit.setKey(PRIMARY_FOLDER);
+        edit.setSummary(R.string.pref_primary_folder_summary);
+        edit.setTitle(R.string.pref_primary_folder);
+        edit.setDefaultValue(Util.getSdDirectory());
+        cate.addPreference(edit);
+        
+        CheckBoxPreference check = new CheckBoxPreference(this);
+        check.setKey(READ_ROOT);
+        check.setTitle(R.string.pref_read_root);
+        check.setDefaultValue(false);
+        cate.addPreference(check);
+        
+        check = new CheckBoxPreference(this);
+        check.setKey(SHOW_REAL_PATH);
+        check.setTitle(R.string.pref_show_real_path);
+        check.setSummary(R.string.pref_show_real_path_summary);
+        check.setDefaultValue(false);
+        cate.addPreference(check);
+        setPreferenceScreen(root);
         mEditTextPreference = (EditTextPreference) findPreference(PRIMARY_FOLDER);
         mCheckBoxPreferenceShowRealPath = (CheckBoxPreference) findPreference(SHOW_REAL_PATH);
         mCheckBoxPreferenceShowRealPath.setEnabled(getPreferenceScreen()

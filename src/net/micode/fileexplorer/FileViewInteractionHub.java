@@ -388,8 +388,8 @@ public class FileViewInteractionHub implements IOperationProgressListener {
             String displayPath = mFileViewListener.getDisplayPath(mCurrentPath);
             boolean root = true;
             int left = 0;
-            if (Util.isInternalCardReady() && (mCurrentPath.equals("/mnt/sdcard") || mCurrentPath.equals("/mnt/emmc"))){
-            	String paths[]={"/mnt/sdcard", "/mnt/emmc"};
+            if (Util.isInternalCardReady() && (mCurrentPath.equals(Util.getSdDirectory()) || mCurrentPath.equals(Util.getInternalDirectory()))){
+            	String paths[]={Util.getSdDirectory(), Util.getInternalDirectory()};
             	for (int i = 0; i < paths.length; i++) {
             		 View listItem = LayoutInflater.from(mContext).inflate(
                              R.layout.dropdown_item, null);

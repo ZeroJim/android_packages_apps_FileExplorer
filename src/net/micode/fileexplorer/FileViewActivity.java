@@ -416,9 +416,9 @@ public class FileViewActivity extends Fragment implements
         if (path.startsWith(this.sdDir) && !mShowRealPath) {
             return getString(R.string.sd_folder)
                     + path.substring(this.sdDir.length());
-        } else if (path.startsWith("/mnt/emmc") && !mShowRealPath){
+        } else if (path.startsWith(Util.getInternalDirectory()) && !mShowRealPath){
         	return getString(R.string.emmc_folder)
-                    + path.substring("/mnt/emmc".length());
+                    + path.substring(Util.getInternalDirectory().length());
         } else {
             return path;
         }
@@ -431,7 +431,7 @@ public class FileViewActivity extends Fragment implements
         if (displayPath.startsWith(perfixName)) {
             return this.sdDir + displayPath.substring(perfixName.length());
         } else if (displayPath.startsWith(internalCardName)) {
-            return "/mnt/emmc" + displayPath.substring(internalCardName.length());
+            return Util.getInternalDirectory() + displayPath.substring(internalCardName.length());
         } else {
             return displayPath;
         }

@@ -55,7 +55,7 @@ public class Util {
     }
 
 	public static boolean isInternalCardReady() {
-		File emmc = new File("/mnt/emmc/");
+		File emmc = new File(Util.getInternalDirectory());
 		if (emmc.exists()) {
 			return emmc.getFreeSpace() > 0;
 		}
@@ -85,6 +85,10 @@ public class Util {
 
     public static String getSdDirectory() {
         return Environment.getExternalStorageDirectory().getPath();
+    }
+
+    public static String getInternalDirectory() {
+        return System.getenv("INTERNAL_STORAGE");
     }
 
     public static boolean isNormalFile(String fullName) {
