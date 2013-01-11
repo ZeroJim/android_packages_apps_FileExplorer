@@ -409,7 +409,11 @@ public class FileViewInteractionHub implements IOperationProgressListener {
                      text.setText(substring);
 
                      listItem.setOnClickListener(navigationClick);
-                     listItem.setTag(paths[i]);
+                     if (substring.isEmpty()) {
+                    	 listItem.setTag("/");
+                     } else {
+                    	 listItem.setTag(paths[i]);
+                     }
                      list.addView(listItem);
 				}
             }
@@ -439,8 +443,9 @@ public class FileViewInteractionHub implements IOperationProgressListener {
                 text.setText(substring);
 
                 listItem.setOnClickListener(navigationClick);
-                listItem.setTag(mFileViewListener.getRealPath(displayPath
-                        .substring(0, end)));
+                String tag = mFileViewListener.getRealPath(displayPath
+                        .substring(0, end));
+                listItem.setTag(tag.isEmpty() ? "/" : tag);
                 pos = end + 1;
                 list.addView(listItem);
             }
