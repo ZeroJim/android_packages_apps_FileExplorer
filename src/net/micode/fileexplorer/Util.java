@@ -55,6 +55,7 @@ public class Util {
     }
 
 	public static boolean isInternalCardReady() {
+		if (Util.getInternalDirectory() == null) return false;
 		File emmc = new File(Util.getInternalDirectory());
 		if (emmc.exists()) {
 			return emmc.getFreeSpace() > 0;
