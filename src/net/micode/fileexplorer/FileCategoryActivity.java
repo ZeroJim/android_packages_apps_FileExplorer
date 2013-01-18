@@ -143,6 +143,8 @@ public class FileCategoryActivity extends Fragment implements IFileInteractionLi
 				String array[] = intent.getStringArrayExtra("file");
 				File newfile = new File(array[1]);
 				FileInfo fi = mAdapter.findFile(array[0]);
+				if (fi == null)
+					return;
 				// change fileinfo
 				String oldpath = fi.filePath;
 				String newpath = oldpath.replace(fi.fileName, newfile.getName());
