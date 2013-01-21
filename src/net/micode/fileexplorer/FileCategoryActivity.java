@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -28,6 +29,7 @@ import net.micode.fileexplorer.FileViewInteractionHub.Mode;
 import net.micode.fileexplorer.Util.SDCardInfo;
 
 import java.io.File;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -86,7 +88,11 @@ public class FileCategoryActivity extends Fragment implements IFileInteractionLi
         button2Category.put(R.id.category_apk, FileCategory.Apk);
         button2Category.put(R.id.category_favorite, FileCategory.Favorite);
     }
-
+    private boolean isPickIntent() {
+        String action = mActivity.getIntent().getAction();
+        return (Intent.ACTION_PICK.equals(action)
+                || Intent.ACTION_GET_CONTENT.equals(action));
+    }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mActivity = getActivity();
@@ -95,7 +101,11 @@ public class FileCategoryActivity extends Fragment implements IFileInteractionLi
         mRootView = inflater.inflate(R.layout.file_explorer_category, container, false);
         curViewPage = ViewPage.Invalid;
         mFileViewInteractionHub = new FileViewInteractionHub(this);
-        mFileViewInteractionHub.setMode(Mode.View);
+		if (isPickIntent()) {
+			mFileViewInteractionHub.setMode(Mode.Pick);
+		} else {
+			mFileViewInteractionHub.setMode(Mode.View);
+		}
         mFileViewInteractionHub.setRootPath("/");
         mFileIconHelper = new FileIconHelper(mActivity);
         mFavoriteList = new FavoriteList(mActivity, (ListView) mRootView.findViewById(R.id.favorite_list), this, mFileIconHelper);
@@ -309,6 +319,8 @@ public class FileCategoryActivity extends Fragment implements IFileInteractionLi
             mFileCagetoryHelper.setCurCategory(f);
             mFileViewInteractionHub.setCurrentPath(mFileViewInteractionHub.getRootPath()
                     + getString(mFileCagetoryHelper.getCurCategoryNameResId()));
+            Log.i("songlog", "oncategory:"+mFileViewInteractionHub.getRootPath()
+                    + getString(mFileCagetoryHelper.getCurCategoryNameResId()));
             mFileViewInteractionHub.refreshFileList();
         }
 
@@ -410,6 +422,15 @@ public class FileCategoryActivity extends Fragment implements IFileInteractionLi
     @Override
     public void onPick(FileInfo f) {
         // do nothing
+    	try {
+            Intent intent = Intent.parseUri(Uri.fromFile(new File(f.filePath))
+                    .toString(), 0);
+            mActivity.setResult(Activity.RESULT_OK, intent);
+            mActivity.finish();
+            return;
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
