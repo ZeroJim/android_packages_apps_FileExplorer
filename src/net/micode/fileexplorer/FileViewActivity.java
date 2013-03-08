@@ -416,7 +416,7 @@ public class FileViewActivity extends Fragment implements
         if (path.startsWith(this.sdDir) && !mShowRealPath) {
             return getString(R.string.sd_folder)
                     + path.substring(this.sdDir.length());
-        } else if (path.startsWith(Util.getInternalDirectory()) && !mShowRealPath){
+        } else if (Util.getInternalDirectory()!=null && path.startsWith(Util.getInternalDirectory()) && !mShowRealPath){
         	return getString(R.string.emmc_folder)
                     + path.substring(Util.getInternalDirectory().length());
         } else {
